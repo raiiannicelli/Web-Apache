@@ -60,6 +60,3 @@ sudo journalctl -u apache2
 #3.4verificar compressão
 curl -I -H 'Accept-Encoding: gzip,deflate' http://localhost/sua_pagina.html
   127.0.0.1 site1.com
-
----------------------------------   /   /   -----------------------------------
-
