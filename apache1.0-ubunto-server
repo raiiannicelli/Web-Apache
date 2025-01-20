@@ -1,0 +1,96 @@
+            CONFIGURAÇÃO APACHE
+
+#DIRETÓRIOS
+#1.0diretório principal
+  sudo /etc/apache2 #pasta principal
+  sudo /etc/apache2/apache2.conf #configuração de pacotes e módulos principais
+  sudo /etc/apache2/sites-availables #configuração adicional
+  sudo /etc/apache2/sites-enabled #links simbolicos de virtualHost
+
+#1.1diretórios de hospedagem web
+sudo /var/www/html
+  #1.2subdiretório separado por dominio DNS usado
+  sudo mkdir /var/www/seu_dominio/html
+  sudo chown -R <user>:<user> /var/www/seu_dominio/html
+  sudo chmod -R 755 /var/www/seu_dominio/html
+
+#1.3diretórios de Logs
+sudo /var/log/apache2
+acess.log
+erros.log
+
+#1.4diretório de módulos e binários
+sudo usr/lib/apache2/modules
+
+#1.5diretório PID e sockets
+sudo /run/apache2
+
+#1.6diretório alternativo para hospedagem web
+sudo /srv/http/
+sudo /srv/http/seu_site/html
+
+---------------------------------   /   /   -----------------------------------
+
+#STATUS DE EXECUÇÃO
+#2.0status do serviço
+sudo systemctl status apache2 #verificar status atual
+sudo systemctl start apache2 #iniciar apache
+sudo systemctl stop apache2 #parar apache
+sudo systemctl restart apache2 #reiniciar apache
+
+#2.1habilitação permanente
+sudo systemctl enable apache2
+sudo systemctl disable apache2
+
+---------------------------------   /   /   -----------------------------------
+
+#ANÁLISE DAS CONFIGURAÇÕES PERSISTENTES
+#3.0verificar serviço em execução
+https://www.meuservidor.com
+https://localhost
+
+#3.1testar validade das configurações
+sudo apache2ctl configtest
+
+#3.2verificar logs do cache (se habilitado)
+cat /var/cache/apache2/mod_cache_disk/
+
+#3.3analisar logs e comportamento de cache
+sudo journalctl -u apache2
+
+#3.4verificar compressão
+curl -I -H 'Accept-Encoding: gzip,deflate' http://localhost/sua_pagina.html
+
+---------------------------------   /   /   -----------------------------------
+
+#HOSPEDAGEM VIRTUALHOST
+#4.0habilitar módulo virtualhost
+sudo a2enmod vhost_alias
+sudo a2enmod rewrite
+sudo systemctl restart apache2
+
+#4.1configurar o virtualHost por dominio
+sudo nano /etc/apache2/sites-available
+  #exemplo de configuração
+  <VirtualHost *:80>
+    ServerAdmin admin@site1.com
+    ServerName site1.com
+    ServerAlias www.site1.com
+
+    DocumentRoot /var/www/site1.com/html
+    ErrorLog ${APACHE_LOG_DIR}/site1_error.log
+    CustomLog ${APACHE_LOG_DIR}/site1_access.log combined
+
+    <Directory /var/www/site1.com/html>
+        AllowOverride All
+        Require all granted
+    </Directory>
+  </VirtualHost>
+
+#4.2ambiente local para testes
+sudo nano /etc/hosts
+  #adicione no arquivo
+  127.0.0.1 site1.com
+
+---------------------------------   /   /   -----------------------------------
+
