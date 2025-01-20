@@ -1,0 +1,102 @@
+#HOSPEDAGEM VIRTUALHOST
+#1.0configurar o virtualHost por dominio
+sudo nano /etc/apache2/sites-available
+  #exemplo de configuração
+  <VirtualHost *:80>
+    ServerAdmin admin@site1.com
+    ServerName site1.com
+    ServerAlias www.site1.com
+
+    DocumentRoot /var/www/site1.com/html
+    ErrorLog ${APACHE_LOG_DIR}/site1_error.log
+    CustomLog ${APACHE_LOG_DIR}/site1_access.log combined
+
+    <Directory /var/www/site1.com/html>
+        AllowOverride All
+        Require all granted
+    </Directory>
+  </VirtualHost>
+
+#1.1ambiente local para testes
+sudo nano /etc/hosts
+  #adicione no arquivo
+  127.0.0.1 site1.com
+
+#1.2habilitar módulo virtualhost
+sudo a2enmod vhost_alias
+sudo a2enmod rewrite
+sudo systemctl restart apache2
+
+---------------------------------   /   /   -----------------------------------
+
+#HABILITAR CACHE
+#2.0verificar módulos cache; cache_disk; socache
+LoadModule cache_module modules/mod_cache.so
+LoadModule cache_disk_module modules/mod_cache_disk.so
+LoadModule cache_socache_module modules/mod_cache_socache.so
+
+#2.1 criar aquivo de configuração adicional
+sudo nano /etc/apache2/sites-available/cache.conf
+  #Configuração cache, com mod_cache; mod_cache_disk e mod_cache_socache e uso de cacheroot; cachedirlevels ;e cachelockpath
+  <IfModule mod_cache.c>
+    CacheQuickHandler off
+    CacheLock on
+    CacheLockPath /tmp/mod_cache-lock
+    CacheIgnoreHeaders Set-cookie
+
+    <IfModule mod_cache_disk.c>
+        CacheRoot /var/cache/apache2/mod_cache_disk
+        CacheDirLevels 2
+        CacheDirLength 1
+        CacheEnable disk /
+        CacheHeader on
+    </IfModule>
+  </IfModule>
+
+  #configurar expiração de cache com mod_expires, no mesmo arquivo
+  #No mesmo arquivo ou separado: /etc/apache2/sites-available/cache-expires.conf
+  <IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/html "access plus 1 day"
+    ExpiresByType image/gif "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType text/css "access plus 1 week"
+    ExpiresByType application/javascript "access plus 1 week"
+  </IfModule>
+
+#2.2 habilitar cacheamento
+sudo a2enmod cache
+sudo a2enmod cache_disk
+sudo a2enmod expires
+sudo a2enconf cache
+sudo systemctl reload apache2
+
+---------------------------------   /   /   -----------------------------------
+
+#HABILITAR COMPRESSÃO DE CONTEÚDO POR mod_deflate
+#3.0 criar o arquivo de configuração
+sudo nano /etc/apache2/conf-available/deflate.conf
+  #configurar compressão
+  <IfModule mod_deflate.c>
+    # Habilita a compressão para conteúdo HTML, CSS, JavaScript e outros tipos de texto
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css application/xml application/xhtml+xml application/rss+xml application/javascript application/x-javascript application/json image/svg+xml
+
+    # Evita compressão de arquivos já compactados ou que não devem ser comprimidos
+    SetEnvIfNoCase Request_URI \.(?:gif|jpe?g|png|woff2|woff|zip|gz)$ no-gzip
+
+    # Configurações adicionais
+    Header append Vary User-Agent env=!dont-vary
+    DeflateCompressionLevel 6 # Nível de compressão (1-9)
+    DeflateMinLength 1024     # Tamanho mínimo do arquivo para compressão
+  </IfModule>
+
+#3.2 habilitar módulo de compressão mod_deflate
+sudo a2enmod deflate
+sudo a2enmod restart apache2
+sudo systemctl reload apache2
+
+
+
+
+
