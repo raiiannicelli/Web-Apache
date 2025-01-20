@@ -1,5 +1,4 @@
-            CONFIGURAÇÃO APACHE
-
+            CONFIGURAÇÃO APACHE1.0
 #DIRETÓRIOS
 #1.0diretório principal
   sudo /etc/apache2 #pasta principal
@@ -60,36 +59,6 @@ sudo journalctl -u apache2
 
 #3.4verificar compressão
 curl -I -H 'Accept-Encoding: gzip,deflate' http://localhost/sua_pagina.html
-
----------------------------------   /   /   -----------------------------------
-
-#HOSPEDAGEM VIRTUALHOST
-#4.0habilitar módulo virtualhost
-sudo a2enmod vhost_alias
-sudo a2enmod rewrite
-sudo systemctl restart apache2
-
-#4.1configurar o virtualHost por dominio
-sudo nano /etc/apache2/sites-available
-  #exemplo de configuração
-  <VirtualHost *:80>
-    ServerAdmin admin@site1.com
-    ServerName site1.com
-    ServerAlias www.site1.com
-
-    DocumentRoot /var/www/site1.com/html
-    ErrorLog ${APACHE_LOG_DIR}/site1_error.log
-    CustomLog ${APACHE_LOG_DIR}/site1_access.log combined
-
-    <Directory /var/www/site1.com/html>
-        AllowOverride All
-        Require all granted
-    </Directory>
-  </VirtualHost>
-
-#4.2ambiente local para testes
-sudo nano /etc/hosts
-  #adicione no arquivo
   127.0.0.1 site1.com
 
 ---------------------------------   /   /   -----------------------------------
