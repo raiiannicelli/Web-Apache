@@ -1,62 +1,83 @@
-            CONFIGURAÇÃO APACHE1.0
+            #DIRETÓRIOS DE NAVEGAÇÃO APACHE
+#Ao instalar o serviço, localmente na máquina de hospedagem para apache, ele irá gerar algumas pastas 
+#e arquivos para gestão e configuração do servidor... Isso pois a implementação de front end, back end ou 
+#de módulos e plugins de qualidade e segurança são feitos puramente em código, implementados em arquivos 
+#locais, localizados nas pastas especificas para cada função a realizar.
+            
 #DIRETÓRIOS
-#1.0diretório principal
-  sudo /etc/apache2 #pasta principal
-  sudo /etc/apache2/apache2.conf #configuração de pacotes e módulos principais
-  sudo /etc/apache2/sites-availables #configuração adicional
-  sudo /etc/apache2/sites-enabled #links simbolicos de virtualHost
+#1.1diretório principal
+#Configurar diferentes dominios de site, organizados em VirtualHosts e, implementar módulos de qualidade e 
+#segurança do servidor web.
+/etc/apache2
+  #1.1 arquivos do diretorio principal
+  #arquivos de configuração Módulos, plugins e VirtualHost.
+  /etc/apache2/apache2.conf #arquivo de configuração principail (módulos e plugins)
+  /etc/apache2/sites-availables #configuração de sites e VHosts
+  /etc/apache2/sites-enabled #links simbolicos de VHosts
 
-#1.1diretórios de hospedagem web
+#1.2diretórios de hospedagem web
+#diretório padrão de armazenamento arquivos do site, front ou back end
 sudo /var/www/html
-  #1.2subdiretório separado por dominio DNS usado
+  #1.2 subdiretório separado por Dominio usado.
+  #A cada site com dominio configurado em Vhost implementar subdiretório para armazenar HTML, css, php...
+  #Exemplo:
   sudo mkdir /var/www/seu_dominio/html
   sudo chown -R <user>:<user> /var/www/seu_dominio/html
   sudo chmod -R 755 /var/www/seu_dominio/html
 
 #1.3diretórios de Logs
+#Pelo diretório de logs é possivel visualizar os arquivos com requisição de acesso ou erro de acesso em toda 
+#tentativa de acesso ao dominio
 sudo /var/log/apache2
-acess.log
-erros.log
+access.log #arquivos de acessos bem sucedido
+error.log #arquivos de erros no acesso 
 
 #1.4diretório de módulos e binários
+#Contém os módulos e binários
 sudo usr/lib/apache2/modules
 
 #1.5diretório PID e sockets
+#Contém informações do processo e sockets do Apache
 sudo /run/apache2
 
 #1.6diretório alternativo para hospedagem web
+#Diretório alternativo ao /etc/www/html para hospedagem de sites
 sudo /srv/http/
-sudo /srv/http/seu_site/html
+  #1.6subdiretório separados
+  #exemplo
+  sudo /srv/http/seu_site/html
 
 ---------------------------------   /   /   -----------------------------------
 
 #STATUS DE EXECUÇÃO
+#Para verificar status, iniciar, parar ou reiniciar o serviço web apache para ser executado localmente na 
+#máquina basta usar o systemd gerenciador de serviços em execução
 #2.0status do serviço
 sudo systemctl status apache2 #verificar status atual
 sudo systemctl start apache2 #iniciar apache
 sudo systemctl stop apache2 #parar apache
 sudo systemctl restart apache2 #reiniciar apache
 
-#2.1habilitação permanente
+#2.1habilitação/desabilitar permanente
+#Para deixar o serviço rodar ou não rodar, mesmo ao reinicar a máquina, basta fazer o mesmo, com enable ou disable
 sudo systemctl enable apache2
 sudo systemctl disable apache2
 
 ---------------------------------   /   /   -----------------------------------
 
 #ANÁLISE DAS CONFIGURAÇÕES PERSISTENTES
-#3.0verificar serviço em execução
+#3.1verificar serviço em execução
 https://www.meuservidor.com
 https://localhost
 
-#3.1testar validade das configurações
+#3.2testar validade e erros das configurações
 sudo apache2ctl configtest
 
-#3.2verificar logs do cache (se habilitado)
+#3.3verificar logs do cache (se habilitado)
 cat /var/cache/apache2/mod_cache_disk/
 
-#3.3analisar logs e comportamento de cache
+#3.4analisar logs e comportamento de cache
 sudo journalctl -u apache2
 
-#3.4verificar compressão
+#3.5verificar compressão
 curl -I -H 'Accept-Encoding: gzip,deflate' http://localhost/sua_pagina.html
-  127.0.0.1 site1.com
