@@ -1,9 +1,14 @@
-            #DIRETÓRIOS DE NAVEGAÇÃO APACHE
+            #INSTALAÇÃO E DIRETÓRIOS DE NAVEGAÇÃO APACHE
 #Ao instalar o serviço, localmente na máquina de hospedagem para apache, ele irá gerar algumas pastas 
 #e arquivos para gestão e configuração do servidor... Isso pois a implementação de front end, back end ou 
 #de módulos e plugins de qualidade e segurança são feitos puramente em código, implementados em arquivos 
 #locais, localizados nas pastas especificas para cada função a realizar.
-            
+
+#INSTALAÇÃO
+
+
+---------------------------------   /   /   -----------------------------------
+
 #DIRETÓRIOS
 #1.1diretório principal
 #Configurar diferentes dominios de site, organizados em VirtualHosts e, implementar módulos de qualidade e 
@@ -52,16 +57,15 @@ sudo /srv/http/
 #STATUS DE EXECUÇÃO
 #Para verificar status, iniciar, parar ou reiniciar o serviço web apache para ser executado localmente na 
 #máquina basta usar o systemd gerenciador de serviços em execução
-#2.0status do serviço
+#2.1status do serviço
 sudo systemctl status apache2 #verificar status atual
 sudo systemctl start apache2 #iniciar apache
 sudo systemctl stop apache2 #parar apache
 sudo systemctl restart apache2 #reiniciar apache
-
-#2.1habilitação/desabilitar permanente
-#Para deixar o serviço rodar ou não rodar, mesmo ao reinicar a máquina, basta fazer o mesmo, com enable ou disable
-sudo systemctl enable apache2
-sudo systemctl disable apache2
+  #2.1habilitação/desabilitar permanente
+  #Para deixar o serviço rodar ou não rodar, mesmo ao reinicar a máquina, basta fazer o mesmo, com enable ou disable
+  sudo systemctl enable apache2
+  sudo systemctl disable apache2
 
 ---------------------------------   /   /   -----------------------------------
 
