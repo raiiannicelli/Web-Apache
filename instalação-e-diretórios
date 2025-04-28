@@ -6,12 +6,19 @@
 #garantir o funcionamento adequado do sistema é essencial nas etapas de construção do servidor.
 
 #INSTALAÇÃO
-#1.1 comando: terminal ubunto server
-#usar o gerênciador de pacotes apt ou apt-get
+#1.1 atualizar o sistema operacional
+#usar o gerênciador de pacotes apt ou apt-get # para ubunto server)
+sudo apt update
+sudo apt upgrade
+sudo apt full-upgrade
+sudo apt dist-upgrade
+sudo apt autoremove
+audo apt autoclean
 
-sudo apt install apache2
-  #1.2 verificar instalação
-  apache --version
+  #1.2 instalar o apache web service
+    sudo apt install apache2 
+      #1.2 verificar instalação
+      sudo apache -V ou sudo apache --version
 
 
 ---------------------------------   /   /   -----------------------------------
